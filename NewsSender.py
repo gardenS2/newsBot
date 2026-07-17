@@ -12,7 +12,7 @@ RSS_URL = "https://news.naver.com/breakingnews/section/101/260"
 
 def fetch_and_filter_news():
     feed = feedparser.parse(RSS_URL)
-    keywords = ["신도시", "집값", "정책", "부동산", "분양","교산","하남","덕풍","풍산"]
+    keywords = ["대출","신도시", "집값", "정책", "부동산", "분양","교산","하남","덕풍","풍산"]
     matched_articles = []
 
     for entry in feed.entries:
