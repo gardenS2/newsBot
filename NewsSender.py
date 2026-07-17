@@ -8,7 +8,7 @@ CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 # 2. 부동산 관련 RSS 피드 URL (네이버 뉴스 - 부동산 섹션 예시)
 # 실제 활용 시 언론사나 국토부 등 다양한 RSS 주소로 확장 가능합니다.
-RSS_URL = "https://news.naver.com/rss/sections/101/260" 
+RSS_URL = "https://news.naver.com/breakingnews/section/101/260" 
 
 def fetch_and_filter_news():
     feed = feedparser.parse(RSS_URL)
