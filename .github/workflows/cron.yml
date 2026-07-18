@@ -2,8 +2,9 @@ name: Daily Real Estate News Bot
 
 on:
   schedule:
-    # 매일 한국 시간 오전 9시 (UTC 00:00)에 실행
-    - cron: '0 0 * * *'
+    # 💡 한국 시간(KST) 오전 7시, 오후 12시, 오후 6시에 각각 실행
+    # UTC 기준: 22:00(전날), 03:00, 09:00
+    - cron: '0 22,3,9 * * *'
   workflow_dispatch:
 
 jobs:
@@ -14,6 +15,8 @@ jobs:
       # 1. 저장소의 코드를 가상 서버로 가져옴
       - name: Checkout repository code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # 2. 파이썬 환경 세팅
       - name: Set up Python
@@ -24,11 +27,30 @@ jobs:
       # 3. 필요한 라이브러리 설치
       - name: Install dependencies
         run: |
-          pip install feedparser requests
+          pip install requests
 
       # 4. 파이썬 스크립트 실행 (보안 데이터는 Secrets로 주입)
       - name: Run Python Script
         env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python NewsSender.py
+
+      # 5. 파일 변경 사항이 있다면 저장소에 자동으로 커밋 및 푸시
+      - name: Commit and Push sent_urls.txt Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if [ -f "sent_urls.txt" ]; then
+            git add sent_urls.txt
+            
+            if ! git diff --cached --exit-code; then
+              git commit -m "Chore: Optimize and update sent_urls.txt [skip ci]"
+              git push origin main
+            else
+              echo "변경되거나 추가된 링크 데이터가 없습니다."
+            fi
+          fi
