@@ -4,7 +4,8 @@ on:
   schedule:
     # 💡 한국 시간(KST) 오전 7시, 오후 12시, 오후 6시에 각각 실행
     # UTC 기준: 22:00(전날), 03:00, 09:00
-    - cron: '0 22,3,9 * * *'
+    #- cron: '0 22,3,9 * * *'
+    # cron 수행시간 지연으로, Google Cloud Scheduler를 이용하여 하루3번 수행하도록 변경
   workflow_dispatch:
 
 jobs:
